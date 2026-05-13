@@ -1,0 +1,150 @@
+{
+  "report_id": "PBC-2026-00999",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "林娜",
+    "id_card_masked": "310101********4265",
+    "gender": "女",
+    "age": 22,
+    "marital_status": "已婚",
+    "education": "博士",
+    "employer": "某互联网公司",
+    "occupation": "管理人员",
+    "monthly_income": 14342,
+    "residence_city": "成都",
+    "residence_years": 4
+  },
+  "summary": {
+    "loan_account_count": 2,
+    "credit_card_account_count": 1,
+    "total_loan_balance": 2250133,
+    "total_credit_card_used": 7695,
+    "total_credit_card_limit": 80000,
+    "credit_card_utilization": 0.0962,
+    "guarantee_count": 0,
+    "overdue_account_count": 0,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 0,
+    "overdue_count_24m": 0
+  },
+  "loans": [
+    {
+      "loan_type": "个人住房贷款",
+      "lender": "浦发银行",
+      "amount": 2321480,
+      "balance": 2199367,
+      "term_months": 360,
+      "remaining_months": 348,
+      "monthly_payment": 7259,
+      "start_date": "2025-05-15",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "loan_type": "汽车贷款",
+      "lender": "建设银行",
+      "amount": 85602,
+      "balance": 50766,
+      "term_months": 60,
+      "remaining_months": 36,
+      "monthly_payment": 1682,
+      "start_date": "2024-05-20",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "农业银行",
+      "card_type": "信用卡",
+      "credit_limit": 80000,
+      "used_amount": 7695,
+      "utilization": 0.0962,
+      "issue_date": "2019-09-09",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 0,
+    "inquiry_count_6m": 1,
+    "inquiry_count_12m": 5,
+    "loan_approval_inquiry_3m": 0,
+    "credit_card_approval_inquiry_3m": 0,
+    "self_inquiry_3m": 1
+  },
+  "_meta": {
+    "severity_tag": "excellent",
+    "label_overdue_30d_in_6m": 0
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "report_id": "PBC-2026-01040",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "王明",
+    "id_card_masked": "330101********1512",
+    "gender": "男",
+    "age": 32,
+    "marital_status": "已婚",
+    "education": "博士",
+    "employer": "某互联网公司",
+    "occupation": "医生",
+    "monthly_income": 15340,
+    "residence_city": "西安",
+    "residence_years": 12
+  },
+  "summary": {
+    "loan_account_count": 3,
+    "credit_card_account_count": 2,
+    "total_loan_balance": 259311,
+    "total_credit_card_used": 9405,
+    "total_credit_card_limit": 40000,
+    "credit_card_utilization": 0.2351,
+    "guarantee_count": 0,
+    "overdue_account_count": 1,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 1,
+    "overdue_count_24m": 1
+  },
+  "loans": [
+    {
+      "loan_type": "个人经营贷款",
+      "lender": "兴业银行",
+      "amount": 102959,
+      "balance": 8445,
+      "term_months": 12,
+      "remaining_months": 1,
+      "monthly_payment": 10235,
+      "start_date": "2025-06-14",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "loan_type": "个人消费贷款",
+      "lender": "民生银行",
+      "amount": 146554,
+      "balance": 124583,
+      "term_months": 12,
+      "remaining_months": 10,
+      "monthly_payment": 13229,
+      "start_date": "2026-03-11",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        1
+      ]
+    },
+    {
+      "loan_type": "个人消费贷款",
+      "lender": "交通银行",
+      "amount": 304237,
+      "balance": 126283,
+      "term_months": 24,
+      "remaining_months": 10,
+      "monthly_payment": 14749,
+      "start_date": "2025-03-16",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "平安银行",
+      "card_type": "信用卡",
+      "credit_limit": 10000,
+      "used_amount": 4018,
+      "utilization": 0.4018,
+      "issue_date": "2018-01-04",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "issuer": "中信银行",
+      "card_type": "信用卡",
+      "credit_limit": 30000,
+      "used_amount": 5387,
+      "utilization": 0.1796,
+      "issue_date": "2023-10-01",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 3,
+    "inquiry_count_6m": 6,
+    "inquiry_count_12m": 10,
+    "loan_approval_inquiry_3m": 1,
+    "credit_card_approval_inquiry_3m": 1,
+    "self_inquiry_3m": 0
+  },
+  "_meta": {
+    "severity_tag": "good",
+    "label_overdue_30d_in_6m": 0
+  }
+}

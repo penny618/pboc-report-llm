@@ -1,0 +1,169 @@
+{
+  "report_id": "PBC-2026-01011",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "何杰",
+    "id_card_masked": "420101********2898",
+    "gender": "女",
+    "age": 28,
+    "marital_status": "已婚",
+    "education": "大专",
+    "employer": "某事业单位",
+    "occupation": "医生",
+    "monthly_income": 6858,
+    "residence_city": "深圳",
+    "residence_years": 3
+  },
+  "summary": {
+    "loan_account_count": 2,
+    "credit_card_account_count": 2,
+    "total_loan_balance": 383556,
+    "total_credit_card_used": 21138,
+    "total_credit_card_limit": 160000,
+    "credit_card_utilization": 0.1321,
+    "guarantee_count": 0,
+    "overdue_account_count": 0,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 0,
+    "overdue_count_24m": 0
+  },
+  "loans": [
+    {
+      "loan_type": "个人经营贷款",
+      "lender": "中国银行",
+      "amount": 103213,
+      "balance": 80470,
+      "term_months": 60,
+      "remaining_months": 47,
+      "monthly_payment": 2030,
+      "start_date": "2025-04-15",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "loan_type": "汽车贷款",
+      "lender": "招商银行",
+      "amount": 348668,
+      "balance": 303086,
+      "term_months": 60,
+      "remaining_months": 54,
+      "monthly_payment": 6320,
+      "start_date": "2025-11-11",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "交通银行",
+      "card_type": "信用卡",
+      "credit_limit": 80000,
+      "used_amount": 21138,
+      "utilization": 0.2642,
+      "issue_date": "2016-09-28",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "issuer": "招商银行",
+      "card_type": "信用卡",
+      "credit_limit": 80000,
+      "used_amount": 0,
+      "utilization": 0.0,
+      "issue_date": "2020-07-07",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 0,
+    "inquiry_count_6m": 3,
+    "inquiry_count_12m": 4,
+    "loan_approval_inquiry_3m": 0,
+    "credit_card_approval_inquiry_3m": 0,
+    "self_inquiry_3m": 2
+  },
+  "_meta": {
+    "severity_tag": "excellent",
+    "label_overdue_30d_in_6m": 0
+  }
+}

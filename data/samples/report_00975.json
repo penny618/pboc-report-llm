@@ -1,0 +1,148 @@
+{
+  "report_id": "PBC-2026-00975",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "徐秀英",
+    "id_card_masked": "420101********6221",
+    "gender": "女",
+    "age": 22,
+    "marital_status": "未婚",
+    "education": "博士",
+    "employer": "某教育机构",
+    "occupation": "管理人员",
+    "monthly_income": 13881,
+    "residence_city": "天津",
+    "residence_years": 3
+  },
+  "summary": {
+    "loan_account_count": 1,
+    "credit_card_account_count": 2,
+    "total_loan_balance": 212921,
+    "total_credit_card_used": 34763,
+    "total_credit_card_limit": 50000,
+    "credit_card_utilization": 0.6953,
+    "guarantee_count": 1,
+    "overdue_account_count": 3,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 2,
+    "overdue_count_24m": 11
+  },
+  "loans": [
+    {
+      "loan_type": "个人消费贷款",
+      "lender": "中信银行",
+      "amount": 269472,
+      "balance": 212921,
+      "term_months": 60,
+      "remaining_months": 49,
+      "monthly_payment": 5290,
+      "start_date": "2025-06-14",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "建设银行",
+      "card_type": "信用卡",
+      "credit_limit": 30000,
+      "used_amount": 20040,
+      "utilization": 0.668,
+      "issue_date": "2016-08-19",
+      "status": "正常",
+      "min_payment_overdue_24m": 5,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "issuer": "平安银行",
+      "card_type": "信用卡",
+      "credit_limit": 20000,
+      "used_amount": 14723,
+      "utilization": 0.7362,
+      "issue_date": "2017-03-15",
+      "status": "正常",
+      "min_payment_overdue_24m": 3,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 10,
+    "inquiry_count_6m": 18,
+    "inquiry_count_12m": 25,
+    "loan_approval_inquiry_3m": 5,
+    "credit_card_approval_inquiry_3m": 0,
+    "self_inquiry_3m": 0
+  },
+  "_meta": {
+    "severity_tag": "medium",
+    "label_overdue_30d_in_6m": 0
+  }
+}

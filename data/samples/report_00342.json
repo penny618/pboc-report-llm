@@ -1,0 +1,123 @@
+{
+  "report_id": "PBC-2026-00342",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "黄杰",
+    "id_card_masked": "440101********5923",
+    "gender": "女",
+    "age": 36,
+    "marital_status": "未婚",
+    "education": "本科",
+    "employer": "某医疗机构",
+    "occupation": "会计",
+    "monthly_income": 11109,
+    "residence_city": "青岛",
+    "residence_years": 9
+  },
+  "summary": {
+    "loan_account_count": 0,
+    "credit_card_account_count": 2,
+    "total_loan_balance": 0,
+    "total_credit_card_used": 5354,
+    "total_credit_card_limit": 20000,
+    "credit_card_utilization": 0.2677,
+    "guarantee_count": 1,
+    "overdue_account_count": 0,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 0,
+    "overdue_count_24m": 0
+  },
+  "loans": [],
+  "credit_cards": [
+    {
+      "issuer": "平安银行",
+      "card_type": "信用卡",
+      "credit_limit": 10000,
+      "used_amount": 2826,
+      "utilization": 0.2826,
+      "issue_date": "2018-01-15",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "issuer": "浦发银行",
+      "card_type": "信用卡",
+      "credit_limit": 10000,
+      "used_amount": 2528,
+      "utilization": 0.2529,
+      "issue_date": "2022-02-20",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 2,
+    "inquiry_count_6m": 3,
+    "inquiry_count_12m": 6,
+    "loan_approval_inquiry_3m": 0,
+    "credit_card_approval_inquiry_3m": 1,
+    "self_inquiry_3m": 0
+  },
+  "_meta": {
+    "severity_tag": "excellent",
+    "label_overdue_30d_in_6m": 0
+  }
+}

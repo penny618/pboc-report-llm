@@ -1,0 +1,144 @@
+{
+  "report_id": "PBC-2026-00578",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "高明",
+    "id_card_masked": "310101********6032",
+    "gender": "男",
+    "age": 45,
+    "marital_status": "离异",
+    "education": "博士",
+    "employer": "某医疗机构",
+    "occupation": "公务员",
+    "monthly_income": 19715,
+    "residence_city": "长沙",
+    "residence_years": 12
+  },
+  "summary": {
+    "loan_account_count": 2,
+    "credit_card_account_count": 1,
+    "total_loan_balance": 1016988,
+    "total_credit_card_used": 11100,
+    "total_credit_card_limit": 80000,
+    "credit_card_utilization": 0.1388,
+    "guarantee_count": 0,
+    "overdue_account_count": 0,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 0,
+    "overdue_count_24m": 0
+  },
+  "loans": [
+    {
+      "loan_type": "个人住房贷款",
+      "lender": "兴业银行",
+      "amount": 1035892,
+      "balance": 1004628,
+      "term_months": 300,
+      "remaining_months": 294,
+      "monthly_payment": 3850,
+      "start_date": "2025-11-11",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "loan_type": "汽车贷款",
+      "lender": "交通银行",
+      "amount": 99306,
+      "balance": 12360,
+      "term_months": 48,
+      "remaining_months": 6,
+      "monthly_payment": 2479,
+      "start_date": "2022-11-27",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "平安银行",
+      "card_type": "信用卡",
+      "credit_limit": 80000,
+      "used_amount": 11100,
+      "utilization": 0.1388,
+      "issue_date": "2021-01-21",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 3,
+    "inquiry_count_6m": 8,
+    "inquiry_count_12m": 14,
+    "loan_approval_inquiry_3m": 0,
+    "credit_card_approval_inquiry_3m": 0,
+    "self_inquiry_3m": 0
+  },
+  "_meta": {
+    "severity_tag": "good",
+    "label_overdue_30d_in_6m": 0
+  }
+}

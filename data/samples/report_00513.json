@@ -1,0 +1,87 @@
+{
+  "report_id": "PBC-2026-00513",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "黄磊",
+    "id_card_masked": "510101********6614",
+    "gender": "女",
+    "age": 39,
+    "marital_status": "未婚",
+    "education": "高中",
+    "employer": "某科技公司",
+    "occupation": "工程师",
+    "monthly_income": 6380,
+    "residence_city": "重庆",
+    "residence_years": 10
+  },
+  "summary": {
+    "loan_account_count": 0,
+    "credit_card_account_count": 1,
+    "total_loan_balance": 0,
+    "total_credit_card_used": 5359,
+    "total_credit_card_limit": 50000,
+    "credit_card_utilization": 0.1072,
+    "guarantee_count": 0,
+    "overdue_account_count": 0,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 0,
+    "overdue_count_24m": 0
+  },
+  "loans": [],
+  "credit_cards": [
+    {
+      "issuer": "中国银行",
+      "card_type": "信用卡",
+      "credit_limit": 50000,
+      "used_amount": 5359,
+      "utilization": 0.1072,
+      "issue_date": "2020-07-03",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 1,
+    "inquiry_count_6m": 2,
+    "inquiry_count_12m": 5,
+    "loan_approval_inquiry_3m": 1,
+    "credit_card_approval_inquiry_3m": 0,
+    "self_inquiry_3m": 0
+  },
+  "_meta": {
+    "severity_tag": "excellent",
+    "label_overdue_30d_in_6m": 0
+  }
+}

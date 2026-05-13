@@ -1,0 +1,125 @@
+{
+  "report_id": "PBC-2026-00123",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "吴敏",
+    "id_card_masked": "310101********6324",
+    "gender": "男",
+    "age": 35,
+    "marital_status": "未婚",
+    "education": "硕士",
+    "employer": "某科技公司",
+    "occupation": "技术员",
+    "monthly_income": 6518,
+    "residence_city": "上海",
+    "residence_years": 17
+  },
+  "summary": {
+    "loan_account_count": 1,
+    "credit_card_account_count": 1,
+    "total_loan_balance": 477042,
+    "total_credit_card_used": 21730,
+    "total_credit_card_limit": 50000,
+    "credit_card_utilization": 0.4346,
+    "guarantee_count": 0,
+    "overdue_account_count": 1,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 1,
+    "overdue_count_24m": 1
+  },
+  "loans": [
+    {
+      "loan_type": "个人住房贷款",
+      "lender": "平安银行",
+      "amount": 2448910,
+      "balance": 477042,
+      "term_months": 360,
+      "remaining_months": 68,
+      "monthly_payment": 7505,
+      "start_date": "2002-05-16",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "民生银行",
+      "card_type": "信用卡",
+      "credit_limit": 50000,
+      "used_amount": 21730,
+      "utilization": 0.4346,
+      "issue_date": "2025-05-10",
+      "status": "正常",
+      "min_payment_overdue_24m": 1,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 3,
+    "inquiry_count_6m": 5,
+    "inquiry_count_12m": 14,
+    "loan_approval_inquiry_3m": 1,
+    "credit_card_approval_inquiry_3m": 1,
+    "self_inquiry_3m": 2
+  },
+  "_meta": {
+    "severity_tag": "good",
+    "label_overdue_30d_in_6m": 0
+  }
+}

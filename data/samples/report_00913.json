@@ -1,0 +1,212 @@
+{
+  "report_id": "PBC-2026-00913",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "黄超",
+    "id_card_masked": "440101********5770",
+    "gender": "男",
+    "age": 44,
+    "marital_status": "未婚",
+    "education": "大专",
+    "employer": "某教育机构",
+    "occupation": "销售",
+    "monthly_income": 9610,
+    "residence_city": "杭州",
+    "residence_years": 10
+  },
+  "summary": {
+    "loan_account_count": 3,
+    "credit_card_account_count": 3,
+    "total_loan_balance": 581490,
+    "total_credit_card_used": 262886,
+    "total_credit_card_limit": 380000,
+    "credit_card_utilization": 0.6918,
+    "guarantee_count": 0,
+    "overdue_account_count": 6,
+    "current_overdue_amount": 51169,
+    "max_overdue_months_24m": 2,
+    "overdue_count_24m": 14
+  },
+  "loans": [
+    {
+      "loan_type": "个人经营贷款",
+      "lender": "中国银行",
+      "amount": 277576,
+      "balance": 264589,
+      "term_months": 24,
+      "remaining_months": 23,
+      "monthly_payment": 12242,
+      "start_date": "2026-04-10",
+      "status": "正常",
+      "overdue_history_24m": [
+        2
+      ]
+    },
+    {
+      "loan_type": "个人消费贷款",
+      "lender": "浦发银行",
+      "amount": 109161,
+      "balance": 9053,
+      "term_months": 12,
+      "remaining_months": 1,
+      "monthly_payment": 9999,
+      "start_date": "2025-06-14",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "loan_type": "个人消费贷款",
+      "lender": "工商银行",
+      "amount": 321030,
+      "balance": 307848,
+      "term_months": 12,
+      "remaining_months": 11,
+      "monthly_payment": 28928,
+      "start_date": "2026-04-10",
+      "status": "正常",
+      "overdue_history_24m": [
+        1
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "浦发银行",
+      "card_type": "信用卡",
+      "credit_limit": 80000,
+      "used_amount": 72922,
+      "utilization": 0.9115,
+      "issue_date": "2022-01-12",
+      "status": "正常",
+      "min_payment_overdue_24m": 2,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "issuer": "浦发银行",
+      "card_type": "信用卡",
+      "credit_limit": 150000,
+      "used_amount": 99675,
+      "utilization": 0.6645,
+      "issue_date": "2021-01-30",
+      "status": "正常",
+      "min_payment_overdue_24m": 5,
+      "overdue_history_24m": [
+        0,
+        2,
+        0,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "issuer": "建设银行",
+      "card_type": "信用卡",
+      "credit_limit": 150000,
+      "used_amount": 90289,
+      "utilization": 0.6019,
+      "issue_date": "2020-08-17",
+      "status": "正常",
+      "min_payment_overdue_24m": 3,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 7,
+    "inquiry_count_6m": 16,
+    "inquiry_count_12m": 20,
+    "loan_approval_inquiry_3m": 0,
+    "credit_card_approval_inquiry_3m": 1,
+    "self_inquiry_3m": 1
+  },
+  "_meta": {
+    "severity_tag": "medium",
+    "label_overdue_30d_in_6m": 0
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "report_id": "PBC-2026-00252",
+  "report_date": "2026-05-09",
+  "personal_info": {
+    "name": "朱霞",
+    "id_card_masked": "510101********9656",
+    "gender": "男",
+    "age": 46,
+    "marital_status": "丧偶",
+    "education": "本科",
+    "employer": "某教育机构",
+    "occupation": "公务员",
+    "monthly_income": 14510,
+    "residence_city": "北京",
+    "residence_years": 9
+  },
+  "summary": {
+    "loan_account_count": 2,
+    "credit_card_account_count": 1,
+    "total_loan_balance": 174620,
+    "total_credit_card_used": 51250,
+    "total_credit_card_limit": 150000,
+    "credit_card_utilization": 0.3417,
+    "guarantee_count": 0,
+    "overdue_account_count": 1,
+    "current_overdue_amount": 0,
+    "max_overdue_months_24m": 1,
+    "overdue_count_24m": 1
+  },
+  "loans": [
+    {
+      "loan_type": "汽车贷款",
+      "lender": "兴业银行",
+      "amount": 362600,
+      "balance": 82097,
+      "term_months": 36,
+      "remaining_months": 8,
+      "monthly_payment": 11512,
+      "start_date": "2024-01-21",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "loan_type": "汽车贷款",
+      "lender": "平安银行",
+      "amount": 94327,
+      "balance": 92523,
+      "term_months": 48,
+      "remaining_months": 45,
+      "monthly_payment": 2287,
+      "start_date": "2026-02-09",
+      "status": "正常",
+      "overdue_history_24m": [
+        0,
+        1,
+        0
+      ]
+    }
+  ],
+  "credit_cards": [
+    {
+      "issuer": "建设银行",
+      "card_type": "信用卡",
+      "credit_limit": 150000,
+      "used_amount": 51250,
+      "utilization": 0.3417,
+      "issue_date": "2020-10-06",
+      "status": "正常",
+      "min_payment_overdue_24m": 0,
+      "overdue_history_24m": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "public_records": {
+    "civil_judgments": 0,
+    "enforcement_records": 0,
+    "tax_arrears": 0,
+    "administrative_penalties": 0
+  },
+  "inquiry_records": {
+    "inquiry_count_3m": 3,
+    "inquiry_count_6m": 4,
+    "inquiry_count_12m": 14,
+    "loan_approval_inquiry_3m": 1,
+    "credit_card_approval_inquiry_3m": 0,
+    "self_inquiry_3m": 1
+  },
+  "_meta": {
+    "severity_tag": "good",
+    "label_overdue_30d_in_6m": 0
+  }
+}
