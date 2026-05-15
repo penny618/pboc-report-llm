@@ -1,6 +1,0 @@
-/home/penny/yxr_llm/credit_risk_pboc/data/samples
-开始生成 1200 份征信报告样本...
-✓ 完成! 共生成 1200 个文件
-  风险分层: {'excellent': 600, 'good': 360, 'medium': 180, 'bad': 60}
-  真实逾期率: 7.92%
-  输出目录: /home/penny/yxr_llm/credit_risk_pboc/data/samples
