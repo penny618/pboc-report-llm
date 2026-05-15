@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏦 LLM-PBoC-Credit-Risk
+# 🏦 LLM-PBOC-Credit-Risk
 
 **基于 Qwen3-VL 本地大模型的人行征信报告批量风控解读**
 
@@ -265,7 +265,6 @@ Prompt 设计决定 **>50%** 的最终效果。本项目的 `SYSTEM_PROMPT` 由�
 | medium | 15% | ~25% | 出现 M1/M2，DTI 偏高，近期查询多 |
 | bad | 5% | ~65% | 当前逾期 / M3+ / 公共记录 / DTI 爆表 |
 
-> 对标中国商业银行个贷不良率 1-3% + 关注类 5-8% 的真实客群分布。
 
 ### 特征工程：压缩 + 衍生
 
