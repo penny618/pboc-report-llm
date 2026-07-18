@@ -18,6 +18,10 @@ from pathlib import Path
 
 random.seed(42)
 np.random.seed(42)
+# DTI 校准用独立随机流,避免扰动主流(保证其余字段与旧数据逐字节一致,便于 A/B)
+dti_rng = random.Random(12345)
+# 固定报告锚点日期:避免用 datetime.now() 导致日期字段随运行日变化,保证逐字节可复现
+REPORT_DATE = datetime(2026, 5, 9)
 
 # ---------- 配置区 ----------
 N_SAMPLES = 1200
@@ -146,7 +150,7 @@ def gen_one_report(report_idx: int, severity: str) -> dict:
             "amount": amount, "balance": balance,
             "term_months": term, "remaining_months": term - elapsed,
             "monthly_payment": monthly_payment,
-            "start_date": (datetime.now() - timedelta(days=elapsed*30)).strftime("%Y-%m-%d"),
+            "start_date": (REPORT_DATE - timedelta(days=elapsed*30)).strftime("%Y-%m-%d"),
             "status": "正常" if (not history or max(history) < 3) else "关注",
             "overdue_history_24m": history,
         })
@@ -182,12 +186,32 @@ def gen_one_report(report_idx: int, severity: str) -> dict:
             "card_type": "信用卡",
             "credit_limit": limit, "used_amount": used,
             "utilization": round(util, 4),
-            "issue_date": (datetime.now() - timedelta(days=random.randint(180, 3650))).strftime("%Y-%m-%d"),
+            "issue_date": (REPORT_DATE - timedelta(days=random.randint(180, 3650))).strftime("%Y-%m-%d"),
             "status": "正常" if max(history) < 3 else "关注",
             "min_payment_overdue_24m": sum(1 for v in history if v >= 1),
             "overdue_history_24m": history,
         })
         total_limit += limit; total_used += used
+
+    # ---------- 按风险等级校准 DTI(因果一致的关键修正) ----------
+    # 原实现里 monthly_payment = amount/term,而 amount 与收入无关,
+    # 短期大额消费/经营贷会产生"月供 > 数倍月收入"的天价 DTI(如 DTI=600%)。
+    # 这里按风险等级抽取目标负债收入比,再把总债务月供按余额占比回填到各笔贷款,
+    # 使 DTI 落在真实业务区间且与风险等级单调一致。
+    # (amount/term 仍作为贷款的授信事实保留,月供以实际债务负担为准。)
+    TARGET_DTI_BAND = {
+        "excellent": (0.10, 0.40),
+        "good":      (0.30, 0.60),
+        "medium":    (0.55, 0.90),
+        "bad":       (0.85, 1.60),
+    }[severity]
+    target_dti = dti_rng.uniform(*TARGET_DTI_BAND)
+    cc_min_total = sum(c["used_amount"] * 0.1 for c in credit_cards)  # 与 feature_engineering 口径一致
+    loan_debt_service = max(0.0, target_dti * monthly_income - cc_min_total)
+    bal_sum = sum(l["balance"] for l in loans)
+    for l in loans:
+        share = (l["balance"] / bal_sum) if bal_sum > 0 else (1.0 / len(loans))
+        l["monthly_payment"] = max(200, int(loan_debt_service * share))
 
     # ---------- 汇总 ----------
     all_histories = loan_overdue_histories + cc_overdue_histories
@@ -250,7 +274,7 @@ def gen_one_report(report_idx: int, severity: str) -> dict:
 
     return {
         "report_id": f"PBC-2026-{report_idx:05d}",
-        "report_date": "2026-05-09",
+        "report_date": REPORT_DATE.strftime("%Y-%m-%d"),
         "personal_info": personal_info,
         "summary": summary,
         "loans": loans,

@@ -2,14 +2,22 @@
 qwen_inference.py
 Qwen 本地模型批量解读征信报告。
 
-支持两种模式:
-- transformers 模式 (默认): 简单易用,适合 7B/14B 单卡推理
-- vllm 模式: 高吞吐,适合大规模批量推理 (推荐 1000+ 样本)
+支持三种模式:
+- vllm 模式 (推荐): 高吞吐连续批处理,适合大规模批量推理 (1000+ 样本)
+- transformers 模式: 简单易用,单卡逐条/小批推理
+- mock 模式: 无 GPU 时基于规则演示流程
 
-模型推荐:
-- Qwen2.5-7B-Instruct (16GB 显存可跑, 速度快)
-- Qwen2.5-14B-Instruct (单 A100 40G 推荐, 准确度更高)
-- Qwen2.5-72B-Instruct (多卡, 生产环境推荐)
+当前选型: Qwen3.5-4B (Qwen3_5ForConditionalGeneration, 混合线性注意力)
+    - 仅 8/32 层保留 full-attention KV cache -> KV 显存占用远低于同规模稠密模型
+    - 因此可在 16GB 消费级 GPU 上开启较高的 max_num_seqs 并发
+    - 需 vLLM >= 0.25 (注册了 Qwen3_5ForConditionalGeneration) + transformers 5.x
+
+针对本任务的关键优化 (相比 2B/单序列基线):
+    1. max_num_seqs 从 1 提升到 N -> 真正的连续批处理,吞吐提升数倍
+    2. enable_prefix_caching -> ~500 token 的 SYSTEM_PROMPT 全量复用,输入算力大幅下降
+    3. 关闭 thinking 模式 (enable_thinking=False) -> 省掉推理链 token,直出 JSON
+    4. 结构化输出 (guided/structured JSON) -> 100% 合法 JSON,免去脆弱正则解析
+    5. 单次 generate 提交全部 prompt -> 由 vLLM 调度器统一做连续批处理
 
 输出: 每份征信报告对应一个 JSON,含
     - overdue_probability  : 逾期概率 (0-1)
@@ -72,6 +80,30 @@ USER_PROMPT_TEMPLATE = """请评估以下征信报告:
 请输出 JSON 格式的风险评估结果。"""
 
 
+# 结构化输出 JSON Schema - 交给 vLLM 做约束解码,保证 100% 合法 JSON
+RISK_JSON_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "overdue_probability": {"type": "number", "minimum": 0, "maximum": 1},
+        "risk_level": {"type": "string", "enum": ["低风险", "中风险", "高风险", "极高风险"]},
+        "key_drivers": {
+            "type": "array",
+            "items": {"type": "string"},
+            "minItems": 1,
+            "maxItems": 6,
+        },
+        "explanation": {"type": "string"},
+        "recommendation": {"type": "string", "enum": ["批准", "有条件批准", "拒绝"]},
+        "suggested_credit_limit_ratio": {"type": "number", "minimum": 0, "maximum": 1},
+    },
+    "required": [
+        "overdue_probability", "risk_level", "key_drivers",
+        "explanation", "recommendation", "suggested_credit_limit_ratio",
+    ],
+    "additionalProperties": False,
+}
+
+
 # ============================================================
 #  推理引擎
 # ============================================================
@@ -79,12 +111,22 @@ USER_PROMPT_TEMPLATE = """请评估以下征信报告:
 class QwenInferenceEngine:
     """统一推理接口,支持 transformers / vllm 两种 backend"""
 
-    def __init__(self, model_path: str, backend: str = "transformers",
-                 max_new_tokens: int = 512, temperature: float = 0.1):
+    def __init__(self, model_path: str, backend: str = "vllm",
+                 max_new_tokens: int = 512, temperature: float = 0.1,
+                 max_model_len: int = 2048, max_num_seqs: int = 64,
+                 gpu_mem_util: float = 0.92, enforce_eager: bool = False,
+                 use_guided: bool = True, enable_thinking: bool = False):
         self.model_path = model_path
         self.backend = backend
         self.max_new_tokens = max_new_tokens
         self.temperature = temperature
+        self.max_model_len = max_model_len
+        self.max_num_seqs = max_num_seqs
+        self.gpu_mem_util = gpu_mem_util
+        self.enforce_eager = enforce_eager
+        self.use_guided = use_guided
+        self.want_thinking = enable_thinking
+        self.chat_template_kwargs: Dict[str, Any] = {}
         self._init_backend()
 
     def _init_backend(self):
@@ -100,68 +142,127 @@ class QwenInferenceEngine:
         from transformers import AutoModelForCausalLM, AutoTokenizer
         print(f"[transformers] 加载模型: {self.model_path}")
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=True)
+        # decoder 批量推理需要左 padding
+        self.tokenizer.padding_side = "left"
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto",
+            attn_implementation="sdpa",   # 无 flash-attn 时的高效实现
             trust_remote_code=True,
         )
         self.model.eval()
+        self._detect_thinking_kwarg()
         print("[transformers] 模型加载完毕")
 
     def _init_vllm(self):
-        from vllm import LLM, SamplingParams
+        from vllm import LLM
         print(f"[vllm] 加载模型: {self.model_path}")
+        print(f"[vllm] 配置: max_num_seqs={self.max_num_seqs}, "
+              f"max_model_len={self.max_model_len}, prefix_caching=on, "
+              f"enforce_eager={self.enforce_eager}")
         self.llm = LLM(
             model=self.model_path,
             trust_remote_code=True,
-            gpu_memory_utilization=0.9,
-            max_model_len=2048,
-            max_num_seqs=1,
+            gpu_memory_utilization=self.gpu_mem_util,
+            max_model_len=self.max_model_len,
+            max_num_seqs=self.max_num_seqs,   # 关键: 真并发 (基线仅为 1)
             dtype="bfloat16",
-            enforce_eager=True
+            enable_prefix_caching=True,       # 系统提示全量复用
+            enforce_eager=self.enforce_eager, # False -> 开启 CUDA graph 加速 decode
         )
-        self.sampling_params = SamplingParams(
-            temperature=self.temperature,
-            top_p=0.9,
-            max_tokens=self.max_new_tokens,
-        )
-        # tokenizer 用于构造 chat template
+        self.sampling_params = self._build_sampling_params()
         from transformers import AutoTokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path, trust_remote_code=True)
+        self._detect_thinking_kwarg()
         print("[vllm] 模型加载完毕")
 
-    def _build_prompt(self, summary_text: str) -> str:
-        messages = [
+    def _detect_thinking_kwarg(self):
+        """探测 chat template 是否支持 enable_thinking,决定是否关闭思维链"""
+        self.chat_template_kwargs = {}
+        try:
+            self.tokenizer.apply_chat_template(
+                [{"role": "user", "content": "x"}],
+                tokenize=False, add_generation_prompt=True,
+                enable_thinking=self.want_thinking,
+            )
+            self.chat_template_kwargs = {"enable_thinking": self.want_thinking}
+            state = "开启" if self.want_thinking else "关闭"
+            print(f"[chat] thinking 模式已{state} (enable_thinking={self.want_thinking})")
+        except TypeError:
+            print("[chat] chat template 不支持 enable_thinking,保持模板默认")
+
+    def _build_sampling_params(self):
+        from vllm import SamplingParams
+        kw = dict(temperature=self.temperature, top_p=0.9, max_tokens=self.max_new_tokens)
+        if self.use_guided:
+            applied = False
+            # vLLM 0.25+: structured_outputs;  旧版: guided_decoding
+            try:
+                from vllm.sampling_params import StructuredOutputsParams
+                kw["structured_outputs"] = StructuredOutputsParams(json=RISK_JSON_SCHEMA)
+                applied = True
+                print("[vllm] 已启用结构化输出 (StructuredOutputsParams.json)")
+            except Exception:
+                try:
+                    from vllm.sampling_params import GuidedDecodingParams
+                    kw["guided_decoding"] = GuidedDecodingParams(json=RISK_JSON_SCHEMA)
+                    applied = True
+                    print("[vllm] 已启用结构化输出 (GuidedDecodingParams.json)")
+                except Exception as e:
+                    print(f"[vllm] 结构化输出不可用 ({e}),退回自由生成 + 正则解析")
+            if not applied:
+                self.use_guided = False
+        return SamplingParams(**kw)
+
+    def _build_messages(self, summary_text: str) -> List[Dict[str, str]]:
+        return [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": USER_PROMPT_TEMPLATE.format(summary_text=summary_text)},
         ]
-        return self.tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
-        )
 
     def generate_batch(self, summary_texts: List[str]) -> List[str]:
-        prompts = [self._build_prompt(t) for t in summary_texts]
+        messages_list = [self._build_messages(t) for t in summary_texts]
         if self.backend == "vllm":
-            outputs = self.llm.generate(prompts, self.sampling_params)
+            ck = self.chat_template_kwargs or None
+            # 一次性提交全部对话,交由 vLLM 连续批处理调度
+            outputs = self.llm.chat(
+                messages_list,
+                self.sampling_params,
+                chat_template_kwargs=ck,
+                use_tqdm=True,
+            )
             return [o.outputs[0].text for o in outputs]
         else:
-            return [self._generate_single_hf(p) for p in prompts]
+            return self._generate_hf_batch(messages_list)
 
-    def _generate_single_hf(self, prompt: str) -> str:
+    def _generate_hf_batch(self, messages_list: List[List[Dict[str, str]]],
+                           micro_batch: int = 8) -> List[str]:
         import torch
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
-        with torch.no_grad():
-            output_ids = self.model.generate(
-                **inputs,
-                max_new_tokens=self.max_new_tokens,
-                temperature=self.temperature,
-                do_sample=self.temperature > 0,
-                top_p=0.9,
-                pad_token_id=self.tokenizer.eos_token_id,
-            )
-        gen_ids = output_ids[0][inputs.input_ids.shape[1]:]
-        return self.tokenizer.decode(gen_ids, skip_special_tokens=True)
+        prompts = [
+            self.tokenizer.apply_chat_template(
+                m, tokenize=False, add_generation_prompt=True, **self.chat_template_kwargs)
+            for m in messages_list
+        ]
+        outs: List[str] = []
+        for i in range(0, len(prompts), micro_batch):
+            chunk = prompts[i:i + micro_batch]
+            enc = self.tokenizer(chunk, return_tensors="pt", padding=True).to(self.model.device)
+            with torch.inference_mode():
+                gen = self.model.generate(
+                    **enc,
+                    max_new_tokens=self.max_new_tokens,
+                    do_sample=self.temperature > 0,
+                    temperature=self.temperature if self.temperature > 0 else None,
+                    top_p=0.9,
+                    pad_token_id=self.tokenizer.pad_token_id,
+                )
+            for j in range(gen.shape[0]):
+                new_ids = gen[j][enc.input_ids.shape[1]:]
+                outs.append(self.tokenizer.decode(new_ids, skip_special_tokens=True))
+        return outs
 
 
 # ============================================================
@@ -299,6 +400,18 @@ def mock_inference(summary_text: str, features: Dict[str, Any]) -> Dict[str, Any
 #  批处理主流程
 # ============================================================
 
+def _safe_parse(raw: str) -> Dict[str, Any]:
+    try:
+        return parse_llm_json(raw)
+    except Exception as e:
+        return {
+            "overdue_probability": -1, "risk_level": "解析失败",
+            "key_drivers": [], "explanation": str(e),
+            "recommendation": "需人工复核", "suggested_credit_limit_ratio": 0,
+            "_raw_output": raw,
+        }
+
+
 def process_one(report_path: Path, engine, mock: bool = False) -> Dict[str, Any]:
     report = json.loads(report_path.read_text(encoding="utf-8"))
     summary = build_summary_text(report)
@@ -308,15 +421,7 @@ def process_one(report_path: Path, engine, mock: bool = False) -> Dict[str, Any]
         result = mock_inference(summary, features)
     else:
         raw = engine.generate_batch([summary])[0]
-        try:
-            result = parse_llm_json(raw)
-        except Exception as e:
-            result = {
-                "overdue_probability": -1, "risk_level": "解析失败",
-                "key_drivers": [], "explanation": str(e),
-                "recommendation": "需人工复核", "suggested_credit_limit_ratio": 0,
-                "_raw_output": raw,
-            }
+        result = _safe_parse(raw)
 
     return {
         "report_id": report["report_id"],
@@ -327,30 +432,23 @@ def process_one(report_path: Path, engine, mock: bool = False) -> Dict[str, Any]
     }
 
 
-def batch_inference_vllm(report_paths: List[Path], engine, batch_size: int = 32) -> List[Dict[str, Any]]:
-    """vllm 模式: 真正的批量推理,加速 5-10x"""
-    results = []
-    for i in range(0, len(report_paths), batch_size):
-        chunk = report_paths[i:i + batch_size]
-        reports = [json.loads(p.read_text(encoding="utf-8")) for p in chunk]
-        summaries = [build_summary_text(r) for r in reports]
-        features_list = [extract_features(r) for r in reports]
-        raws = engine.generate_batch(summaries)
+def batch_inference(report_paths: List[Path], engine) -> List[Dict[str, Any]]:
+    """一次性提交全部样本,依赖 vLLM 连续批处理调度 (transformers 后端内部再做 micro-batch)"""
+    reports = [json.loads(p.read_text(encoding="utf-8")) for p in report_paths]
+    summaries = [build_summary_text(r) for r in reports]
+    features_list = [extract_features(r) for r in reports]
 
-        for r, feats, raw in zip(reports, features_list, raws):
-            try:
-                model_out = parse_llm_json(raw)
-            except Exception as e:
-                model_out = {"overdue_probability": -1, "risk_level": "解析失败",
-                             "explanation": str(e), "_raw_output": raw}
-            results.append({
-                "report_id": r["report_id"],
-                "true_label": r.get("_meta", {}).get("label_overdue_30d_in_6m"),
-                "true_severity": r.get("_meta", {}).get("severity_tag"),
-                "features": feats,
-                "model_output": model_out,
-            })
-        print(f"  已处理 {min(i + batch_size, len(report_paths))}/{len(report_paths)}")
+    raws = engine.generate_batch(summaries)
+
+    results = []
+    for r, feats, raw in zip(reports, features_list, raws):
+        results.append({
+            "report_id": r["report_id"],
+            "true_label": r.get("_meta", {}).get("label_overdue_30d_in_6m"),
+            "true_severity": r.get("_meta", {}).get("severity_tag"),
+            "features": feats,
+            "model_output": _safe_parse(raw),
+        })
     return results
 
 
@@ -358,10 +456,18 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_dir", default="../data/samples")
     parser.add_argument("--output_dir", default="../output")
-    parser.add_argument("--model_path", default="Qwen/Qwen2.5-7B-Instruct")
-    parser.add_argument("--backend", choices=["transformers","vllm","mock"], default="mock")
+    parser.add_argument("--model_path", default="/home/penny/models/Qwen3.5-4B")
+    parser.add_argument("--backend", choices=["transformers", "vllm", "mock"], default="vllm")
     parser.add_argument("--limit", type=int, default=0, help="只处理前 N 个,0 表示全部")
-    parser.add_argument("--batch_size", type=int, default=32)
+    # vLLM 性能/显存调优
+    parser.add_argument("--max_num_seqs", type=int, default=64, help="并发序列数 (基线为 1)")
+    parser.add_argument("--max_model_len", type=int, default=2048)
+    parser.add_argument("--gpu_mem_util", type=float, default=0.92)
+    parser.add_argument("--max_new_tokens", type=int, default=512)
+    parser.add_argument("--temperature", type=float, default=0.0, help="默认贪心解码,风控评分可复现")
+    parser.add_argument("--enforce_eager", action="store_true", help="关闭 CUDA graph (更省显存但更慢)")
+    parser.add_argument("--no_guided", action="store_true", help="禁用结构化 JSON 约束解码")
+    parser.add_argument("--enable_thinking", action="store_true", help="开启思维链 (更慢,一般不需要)")
     args = parser.parse_args()
 
     in_dir = Path(args.input_dir)
@@ -374,18 +480,23 @@ def main():
     if args.backend == "mock":
         engine = None
     else:
-        engine = QwenInferenceEngine(args.model_path, backend=args.backend)
+        engine = QwenInferenceEngine(
+            args.model_path, backend=args.backend,
+            max_new_tokens=args.max_new_tokens, temperature=args.temperature,
+            max_model_len=args.max_model_len, max_num_seqs=args.max_num_seqs,
+            gpu_mem_util=args.gpu_mem_util, enforce_eager=args.enforce_eager,
+            use_guided=not args.no_guided, enable_thinking=args.enable_thinking,
+        )
 
     t0 = time.time()
-    if args.backend == "vllm":
-        results = batch_inference_vllm(report_files, engine, args.batch_size)
-    else:
+    if args.backend == "mock":
         results = []
         for i, p in enumerate(report_files, 1):
-            r = process_one(p, engine, mock=(args.backend == "mock"))
-            results.append(r)
+            results.append(process_one(p, engine, mock=True))
             if i % 100 == 0:
                 print(f"  已处理 {i}/{len(report_files)}, 耗时 {time.time()-t0:.1f}s")
+    else:
+        results = batch_inference(report_files, engine)
 
     # 保存所有结果
     out_path = out_dir / "predictions.jsonl"
@@ -393,10 +504,13 @@ def main():
         for r in results:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    print(f"\n✓ 完成! 总耗时 {time.time()-t0:.1f}s, 结果保存至 {out_path}")
-    print(f"  平均每份: {(time.time()-t0)/len(report_files)*1000:.0f} ms")
+    dt = time.time() - t0
+    n_fail = sum(1 for r in results if r["model_output"].get("overdue_probability") == -1)
+    print(f"\n✓ 完成! 总耗时 {dt:.1f}s, 结果保存至 {out_path}")
+    print(f"  平均每份: {dt/len(report_files)*1000:.0f} ms | 吞吐: {len(report_files)/dt:.1f} 份/s")
+    print(f"  JSON 解析成功率: {(len(results)-n_fail)}/{len(results)} "
+          f"({(len(results)-n_fail)/len(results):.1%})")
 
 
 if __name__ == "__main__":
     main()
-
